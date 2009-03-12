@@ -1,0 +1,20 @@
+name:     hslogger-template
+version:  0.1
+synopsis: Automatic generation of hslogger functions
+description:
+    This module provides a Template Haskell function for generating hslogger
+    functions automatically.
+
+license:    PublicDomain
+author:     Brian Lewis <brian@lorf.org>, Ian Taylor <ian@lorf.org>
+maintainer: Brian Lewis <brian@lorf.org>, Ian Taylor <ian@lorf.org>
+category:   Interfaces
+
+cabal-version: >= 1.6
+build-type:    Simple
+
+library
+  exposed-modules: System.Log.TH
+  build-depends:   base, haskell98, hslogger, template-haskell
+  hs-source-dirs:  src
+  ghc-options:     -Wall
