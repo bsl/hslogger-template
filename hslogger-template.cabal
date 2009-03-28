@@ -1,5 +1,5 @@
 name:     hslogger-template
-version:  0.2
+version:  0.2.1
 synopsis: Automatic generation of hslogger functions
 description:
     Library for generating hslogger functions using Template Haskell.
@@ -12,6 +12,8 @@ category:   Interfaces
 
 cabal-version: >= 1.6
 build-type:    Custom
+
+extra-source-files: src/test.hs
 
 library
   exposed-modules: System.Log.Logger.TH
