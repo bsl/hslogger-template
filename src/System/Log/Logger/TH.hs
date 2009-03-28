@@ -1,14 +1,12 @@
-{-# LANGUAGE TemplateHaskell #-}
-
--- | This module provides a function that generates hslogger functions
--- automatically using Template Haskell.
+-- | This module provides functions that generate hslogger functions using
+-- Template Haskell.
 module System.Log.Logger.TH (deriveLoggers) where
 
 import qualified Language.Haskell.TH as TH
 
 import qualified System.Log.Logger as HSL
 
--- | Generate hslogger functions for given priorities.
+-- | Generate hslogger functions for a list of priorities.
 --
 -- Example usage:
 --
@@ -21,24 +19,30 @@ import qualified System.Log.Logger as HSL
 --
 -- Used this way, @deriveLoggers@ would generate the following functions:
 --
--- > info :: String -> IO ()
--- > info s = HSL.infoM "Foo.Bar" ((++) "Foo.Bar: " s)
+-- > infoM :: String -> IO ()
+-- > infoM s = HSL.infoM "Foo.Bar" ((++) "Foo.Bar: " s)
 -- >
--- > debug :: String -> IO ()
--- > debug s = HSL.debugM "Foo.Bar" ((++) "Foo.Bar: " s)
+-- > debugM :: String -> IO ()
+-- > debugM s = HSL.debugM "Foo.Bar" ((++) "Foo.Bar: " s)
 --
 -- The other hslogger priorities follow the same pattern.
 --
 -- So
 --
--- > info "hi there"
+-- > infoM "hi there"
 --
 -- would generate the INFO-level log event
 --
 -- > Foo.Bar: hi there
 --
--- Note: "System.Log.Logger" must be imported qualified, and the qualifier must
--- match the qualifier given to @deriveLoggers@.
+-- Notes:
+--
+--   * "System.Log.Logger" must be imported qualified, and the qualifier must
+--   match the qualifier given to @deriveLoggers@.
+--
+--   * Don't forget to enable Template Haskell preprocessing: specify the
+--   pragma @LANGUAGE TemplateHaskell@ at the top of your source file or
+--   @extensions: TemplateHaskell@ in your cabal file, etc.
 --
 deriveLoggers
   :: String          -- ^ Must match qualifier on import of "System.Log.Logger".
@@ -56,36 +60,38 @@ deriveLogger qualifier moduleName priority = code
     code = do
         sig  <- TH.sigD th_f [t| String -> IO () |]
         body <- TH.funD th_f
-                  [ TH.clause [TH.varP th_s]
-                    (TH.normalB
-                      (TH.appE
-                        (TH.appE
-                          (TH.varE th_h)
-                          (TH.stringE moduleName)
-                        )
+                  [ TH.clause
+                      [TH.varP th_s]
+                      (TH.normalB
                         (TH.appE
                           (TH.appE
-                            (TH.varE '(++))
-                            (TH.litE (TH.stringL (moduleName ++ ": ")))
+                            (TH.varE th_h)
+                            (TH.stringE moduleName)
                           )
-                          (TH.varE th_s)
+                          (TH.appE
+                            (TH.appE
+                              (TH.varE '(++))
+                              (TH.stringE prefix)
+                            )
+                            (TH.varE th_s)
+                          )
                         )
                       )
-                    )
-                    []
+                      []
                   ]
         return [sig, body]
       where
-        th_f = TH.mkName functionName
-        th_h = TH.mkName (concat [qualifier, ".", functionName, "M"])
         th_s = TH.mkName "s"
+        th_f = TH.mkName functionName
+        th_h = TH.mkName (qualifier ++ "." ++ functionName)
+        prefix = moduleName ++ ": "
         functionName =
           case priority of
-            HSL.DEBUG     -> "debug"
-            HSL.INFO      -> "info"
-            HSL.NOTICE    -> "notice"
-            HSL.WARNING   -> "warning"
-            HSL.ERROR     -> "error"
-            HSL.CRITICAL  -> "critical"
-            HSL.ALERT     -> "alert"
-            HSL.EMERGENCY -> "emergency"
+            HSL.DEBUG     -> "debugM"
+            HSL.INFO      -> "infoM"
+            HSL.NOTICE    -> "noticeM"
+            HSL.WARNING   -> "warningM"
+            HSL.ERROR     -> "errorM"
+            HSL.CRITICAL  -> "criticalM"
+            HSL.ALERT     -> "alertM"
+            HSL.EMERGENCY -> "emergencyM"
