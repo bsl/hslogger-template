@@ -3,6 +3,7 @@ version:  0.2
 synopsis: Automatic generation of hslogger functions
 description:
     Library for generating hslogger functions using Template Haskell.
+homepage: http://github.com/bsl/hslogger-template
 
 license:    PublicDomain
 author:     Brian Lewis <brian@lorf.org>, Ian Taylor <ian@lorf.org>
