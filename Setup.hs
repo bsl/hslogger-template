@@ -9,5 +9,5 @@ main =
     defaultMainWithHooks $ simpleUserHooks { runTests = runTests' }
   where
     runTests' _ _ _ _ = do
-        system "runhaskell -ddump-splices -i./src src/test.hs"
+        system "runhaskell -i./src src/test.hs"
         return ()
