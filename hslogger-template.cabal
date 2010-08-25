@@ -11,7 +11,7 @@ cabal-version: >= 1.6
 build-type:    Custom
 
 extra-source-files:
-  src/test.hs
+  src/test.hs, src/testNamed.hs
 
 library
   hs-source-dirs:
