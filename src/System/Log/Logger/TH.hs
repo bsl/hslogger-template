@@ -65,8 +65,8 @@ deriveNamedLoggers
   -> String          -- ^ Must match qualifier on import of "System.Log.Logger".
   -> [HSL.Priority]  -- ^ List of priorities for which to generate logging functions.
   -> TH.Q [TH.Dec]
-deriveNamedLoggers moduleName qualifier priorities =
-      fmap concat (mapM (deriveLogger qualifier moduleName) priorities)
+deriveNamedLoggers prefix qualifier priorities =
+      fmap concat (mapM (deriveLogger qualifier prefix) priorities)
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
