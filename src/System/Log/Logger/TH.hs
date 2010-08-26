@@ -4,8 +4,8 @@
 --   Template Haskell.
 module System.Log.Logger.TH
   (
-    deriveLoggers,
-    deriveNamedLoggers
+    deriveLoggers
+  , deriveNamedLoggers
   )
   where
 
@@ -52,6 +52,13 @@ import qualified System.Log.Logger as HSL
 --   pragma @LANGUAGE TemplateHaskell@ at the top of your source file or
 --   @extensions: TemplateHaskell@ in your cabal file.
 
+deriveLoggers
+  :: String          -- ^ Must match qualifier on import of "System.Log.Logger".
+  -> [HSL.Priority]  -- ^ List of priorities for which to generate logging functions.
+  -> TH.Q [TH.Dec]
+deriveLoggers qualifier priorities =
+    fmap TH.loc_module TH.location >>= \moduleName ->
+      fmap concat (mapM (deriveLogger qualifier moduleName) priorities)
 
 deriveNamedLoggers
   :: String          -- ^ Name for the logger to derive.
@@ -59,15 +66,6 @@ deriveNamedLoggers
   -> [HSL.Priority]  -- ^ List of priorities for which to generate logging functions.
   -> TH.Q [TH.Dec]
 deriveNamedLoggers moduleName qualifier priorities =
-      fmap concat (mapM (deriveLogger qualifier moduleName) priorities)
-
-
-deriveLoggers
-  :: String          -- ^ Must match qualifier on import of "System.Log.Logger".
-  -> [HSL.Priority]  -- ^ List of priorities for which to generate logging functions.
-  -> TH.Q [TH.Dec]
-deriveLoggers qualifier priorities =
-    fmap TH.loc_module TH.location >>= \moduleName ->
       fmap concat (mapM (deriveLogger qualifier moduleName) priorities)
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
