@@ -43,6 +43,10 @@ import qualified System.Log.Logger as HSL
 --
 -- > Foo.Bar: hi there
 --
+-- If the automatically determined module name would not be informative enough
+-- (e.g., "Main"), @deriveNamedLoggers@ allows you to specify a different
+-- message prefix.
+--
 -- Notes:
 --
 --   * "System.Log.Logger" must be imported qualified, and the qualifier must
@@ -61,7 +65,7 @@ deriveLoggers qualifier priorities =
       fmap concat (mapM (deriveLogger qualifier moduleName) priorities)
 
 deriveNamedLoggers
-  :: String          -- ^ Name for the logger to derive.
+  :: String          -- ^ Message prefix, e.g., "SomeProgram".
   -> String          -- ^ Must match qualifier on import of "System.Log.Logger".
   -> [HSL.Priority]  -- ^ List of priorities for which to generate logging functions.
   -> TH.Q [TH.Dec]
