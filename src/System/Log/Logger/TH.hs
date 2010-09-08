@@ -1,7 +1,17 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 -- | This module provides functions that generate hslogger functions using
---   Template Haskell.
+-- Template Haskell.
+--
+-- Notes:
+--
+-- * "System.Log.Logger" must be imported qualified, and the qualifier must
+-- match the qualifier given to @deriveLoggers@ and/or @deriveNamedLoggers@.
+--
+-- * Don't forget to enable Template Haskell preprocessing: specify the pragma
+-- @LANGUAGE TemplateHaskell@ at the top of your source file or
+-- @extensions: TemplateHaskell@ in your cabal file.
+
 module System.Log.Logger.TH
   (
     deriveLoggers
@@ -42,19 +52,6 @@ import qualified System.Log.Logger as HSL
 -- would generate the INFO-level log event
 --
 -- > Foo.Bar: hi there
---
--- If the automatically determined module name would not be informative enough
--- (e.g., "Main"), @deriveNamedLoggers@ allows you to specify a different
--- message prefix.
---
--- Notes:
---
---   * "System.Log.Logger" must be imported qualified, and the qualifier must
---   match the qualifier given to @deriveLoggers@.
---
---   * Don't forget to enable Template Haskell preprocessing: specify the
---   pragma @LANGUAGE TemplateHaskell@ at the top of your source file or
---   @extensions: TemplateHaskell@ in your cabal file.
 
 deriveLoggers
   :: String          -- ^ Must match qualifier on import of "System.Log.Logger".
@@ -63,6 +60,10 @@ deriveLoggers
 deriveLoggers qualifier priorities =
     fmap TH.loc_module TH.location >>= \moduleName ->
       fmap concat (mapM (deriveLogger qualifier moduleName) priorities)
+
+-- | Like @deriveLoggers@, but allows you to specify a message prefix. This
+-- could be useful if the automatically determined module name (e.g., \"Main\")
+-- would not be informative enough.
 
 deriveNamedLoggers
   :: String          -- ^ Message prefix, e.g., "SomeProgram".
