@@ -21,10 +21,9 @@ library
     System.Log.Logger.TH
 
   build-depends:
-    base             >= 3 && < 5,
-    haskell98        == 1.*,
+    base             >= 3.0 && < 4.6,
     hslogger         == 1.*,
-    mtl              == 1.* || == 2.0.*,
+    mtl              >= 1.1 && < 2.2,
     template-haskell == 2.*
 
   ghc-options: -Wall
