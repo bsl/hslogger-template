@@ -21,7 +21,7 @@ library
     System.Log.Logger.TH
 
   build-depends:
-    base             >= 3.0 && < 4.6,
+    base             >= 3.0 && < 5.0,
     hslogger         == 1.*,
     mtl              >= 1.1 && < 2.2,
     template-haskell == 2.*
