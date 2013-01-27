@@ -1,4 +1,4 @@
-`hslogger-template` generates [`hslogger`][1] functions using
+hslogger-template generates [hslogger][1] functions using
 [Template Haskell][2]. The generated functions specify the name of the current module, so
 you don't have to.
 
