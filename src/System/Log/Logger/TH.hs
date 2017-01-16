@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, ExplicitForAll #-}
 
 -- | This module provides functions that generate hslogger functions using
 -- Template Haskell.
@@ -89,7 +89,7 @@ deriveNamedLoggers prefix qualifier priorities =
 
 deriveLogger :: String -> String -> Maybe String -> HSL.Priority -> TH.Q [TH.Dec]
 deriveLogger qualifier moduleName mprefix priority = do
-    sig  <- TH.sigD thF [t| MonadIO m => String -> m () |]
+    sig  <- TH.sigD thF [t| forall m. MonadIO m => String -> m () |]
     body <- TH.funD thF
               [ TH.clause
                   [TH.varP thS]
